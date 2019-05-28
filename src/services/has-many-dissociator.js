@@ -28,12 +28,14 @@ function HasManyDissociator(model, association, options, params, data) {
         }
         return null;
       })
-      .then(function () {
+      .then(async function () {
         if (isDelete) {
           var condition = { id: {} };
           condition.id[OPERATORS.IN] = associatedIds;
-
-          return association.destroy({ where: condition });
+          const records = await association.findAll({ where: condition });
+          for(const record of records){
+              record.destroy();
+          }
         }
       })
       .catch(function (error) {
